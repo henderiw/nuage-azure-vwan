@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/henderiw/nuagewim"
 	"github.com/nuagenetworks/go-bambou/bambou"
 	"github.com/nuagenetworks/vspk-go/vspk"
 )
@@ -58,7 +59,7 @@ func main() {
 		"Name": "vspkPublicNonDpdk",
 	}
 
-	enterprise := nuagewim.nuageEnterprise(enterpriseCfg, Usr)
+	enterprise := nuagewim.NuageEnterprise(enterpriseCfg, Usr)
 
 	//create or get PSK
 
@@ -68,7 +69,7 @@ func main() {
 		"UnencryptedPSK": vwanSitePSK,
 	}
 
-	ikePSK := nuagewim.nuageCreateIKEPSK(ikePSKCfg, enterprise)
+	ikePSK := nuagewim.NuageCreateIKEPSK(ikePSKCfg, enterprise)
 
 	//create IKE Gateway(s)
 
@@ -79,7 +80,7 @@ func main() {
 		"IPAddress":   vwanHubIP1,
 	}
 
-	ikeGateway1 := nuagewim.nuageCreateIKEGateway(ikeGatewayCfg1, enterprise)
+	ikeGateway1 := nuagewim.NuageCreateIKEGateway(ikeGatewayCfg1, enterprise)
 
 	ikeGatewayCfg2 := map[string]interface{}{
 		"Name":        "vspkAzureIKEGatewayName2",
@@ -88,7 +89,7 @@ func main() {
 		"IPAddress":   vwanHubIP2,
 	}
 
-	ikeGateway2 := nuagewim.nuageCreateIKEGateway(ikeGatewayCfg2, enterprise)
+	ikeGateway2 := nuagewim.NuageCreateIKEGateway(ikeGatewayCfg2, enterprise)
 
 	//Create IKE Encryption Profile
 
@@ -109,7 +110,7 @@ func main() {
 		"IPsecSAReplayWindowSize":           "WINDOW_SIZE_64",
 	}
 
-	ikeEncryptionProfile := nuagewim.nuageCreateIKEEncryptionProfile(ikeEncryptionProfileCfg, enterprise)
+	ikeEncryptionProfile := nuagewim.NuageCreateIKEEncryptionProfile(ikeEncryptionProfileCfg, enterprise)
 
 	//Create IKE Gateway Profile
 
@@ -123,7 +124,7 @@ func main() {
 		"AssociatedIKEEncryptionProfileID": ikeEncryptionProfile.ID,
 	}
 
-	ikeGatewayProfile1 := nuagewim.nuageCreateIKEGatewayProfile(ikeGatewayProfileCfg1, enterprise)
+	ikeGatewayProfile1 := nuagewim.NuageCreateIKEGatewayProfile(ikeGatewayProfileCfg1, enterprise)
 
 	ikeGatewayProfileCfg2 := map[string]interface{}{
 		"Name":                             "vspkAzureIKEGatewayProfile2",
@@ -135,7 +136,7 @@ func main() {
 		"AssociatedIKEEncryptionProfileID": ikeEncryptionProfile.ID,
 	}
 
-	ikeGatewayProfile2 := nuagewim.nuageCreateIKEGatewayProfile(ikeGatewayProfileCfg2, enterprise)
+	ikeGatewayProfile2 := nuagewim.NuageCreateIKEGatewayProfile(ikeGatewayProfileCfg2, enterprise)
 
 	nsGatewayCfg := map[string]interface{}{
 		"Name":                  "vspkNsgE200Wifi1",
@@ -144,19 +145,19 @@ func main() {
 		"NetworkAcceleration":   "NONE",
 	}
 
-	nsGateway := nuagewim.nuageNSG(nsGatewayCfg, enterprise)
+	nsGateway := nuagewim.NuageNSG(nsGatewayCfg, enterprise)
 
 	nsPortCfg := map[string]interface{}{
 		"Name": "port1",
 	}
 
-	nsPort := nuagewim.nuageNSGPort(nsPortCfg, nsGateway)
+	nsPort := nuagewim.NuageNSGPort(nsPortCfg, nsGateway)
 
 	nsVlanCfg := map[string]interface{}{
 		"Value": "0",
 	}
 
-	nsVlan := nuagewim.nuageVlan(nsVlanCfg, nsPort)
+	nsVlan := nuagewim.NuageVlan(nsVlanCfg, nsPort)
 
 	ikeGatewayConnCfg1 := map[string]interface{}{
 		"Name":                          "vspkAzureIKEGatewayConnection1",
@@ -169,7 +170,7 @@ func main() {
 		"AssociatedIKEAuthenticationID": ikePSK.ID,
 	}
 
-	ikeGatewayConn1 := nuagewim.nuageIKEGatewayConnection(ikeGatewayConnCfg1, nsVlan)
+	ikeGatewayConn1 := nuagewim.NuageIKEGatewayConnection(ikeGatewayConnCfg1, nsVlan)
 	fmt.Println(ikeGatewayConn1)
 
 	ikeGatewayConnCfg2 := map[string]interface{}{
@@ -183,7 +184,7 @@ func main() {
 		"AssociatedIKEAuthenticationID": ikePSK.ID,
 	}
 
-	ikeGatewayConn2 := nuagewim.nuageIKEGatewayConnection(ikeGatewayConnCfg2, nsVlan)
+	ikeGatewayConn2 := nuagewim.NuageIKEGatewayConnection(ikeGatewayConnCfg2, nsVlan)
 	fmt.Println(ikeGatewayConn2)
 
 }
